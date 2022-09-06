@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
 
-class BoardController {
+class GameController extends InheritedNotifier<ValueNotifier<List<String>>> {
   final int n;
   late List<List<String>> boardMatrix;
   late String currentPlayer;
-  String winner = '';
 
-  BoardController({required this.n}) {
+  GameController({Key? key, required Widget child, required this.n})
+      : super(
+            key: key,
+            child: child,
+            notifier: ValueNotifier(['', 'notStarted'])) {
     currentPlayer = "Circle";
     boardMatrix = List.generate(n, (_) => List.filled(n, ''));
   }
 
+  String get winner => notifier!.value[0];
+  String get status => notifier!.value[1];
+
   void resetBoard() {
     boardMatrix = List.generate(n, (_) => List.filled(n, ''));
-    winner = '';
+    notifier!.value = ['', 'notStarted'];
   }
 
   void markCell(int index) {
+    notifier!.value[1] = "Running";
     int y = index % n;
     int x = index ~/ n;
 
-    if (boardMatrix[x][y] == '') {
+    if (boardMatrix[x][y] == '' && winner == '') {
       currentPlayer == "Circle"
           ? boardMatrix[x][y] = 'O'
           : boardMatrix[x][y] = 'X';
@@ -47,8 +54,9 @@ class BoardController {
       for (int j = 0; j < n; j++) {
         if (boardMatrix[i][0] != boardMatrix[i][j]) sequence = false;
       }
-      if (sequence && boardMatrix[i][0] != '')
-        winner = pieceToPlayer(boardMatrix[i][0]);
+      if (sequence && boardMatrix[i][0] != '') {
+        notifier!.value = [pieceToPlayer(boardMatrix[i][0]), "Running"];
+      }
     }
   }
 
@@ -58,8 +66,9 @@ class BoardController {
       for (int i = 0; i < n; i++) {
         if (boardMatrix[0][j] != boardMatrix[i][j]) sequence = false;
       }
-      if (sequence && boardMatrix[0][j] != '')
-        winner = pieceToPlayer(boardMatrix[0][j]);
+      if (sequence && boardMatrix[0][j] != '') {
+        notifier!.value = [pieceToPlayer(boardMatrix[0][j]), "Running"];
+      }
     }
   }
 
@@ -69,15 +78,16 @@ class BoardController {
       if (boardMatrix[0][0] != boardMatrix[i][i]) sequence = false;
     }
     if (sequence && boardMatrix[0][0] != '') {
-      winner = pieceToPlayer(boardMatrix[0][0]);
+      notifier!.value = [pieceToPlayer(boardMatrix[0][0]), "Running"];
     }
 
     bool sequence2 = true;
     for (int i = 0; i < n; i++) {
       if (boardMatrix[0][n - 1] != boardMatrix[i][n - 1 - i]) sequence2 = false;
     }
-    if (sequence2 && boardMatrix[0][n - 1] != '')
-      winner = pieceToPlayer(boardMatrix[0][n - 1]);
+    if (sequence2 && boardMatrix[0][n - 1] != '') {
+      notifier!.value = [pieceToPlayer(boardMatrix[0][n - 1]), "Running"];
+    }
   }
 
   String pieceToPlayer(String p) {
@@ -94,6 +104,6 @@ class BoardController {
     checkRow();
     checkColumn();
     checkDiagonal();
-    if (winner != '') print(winner);
+    if (notifier!.value != ['', "Running"]) print(notifier!.value);
   }
 }

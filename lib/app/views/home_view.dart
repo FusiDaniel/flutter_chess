@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chess/app/controllers/board_controller.dart';
+import 'package:flutter_chess/app/components/hud.dart';
+import 'package:flutter_chess/app/controllers/game_controller.dart';
 
 import '../components/board.dart';
 
@@ -11,54 +12,29 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final int n = 3;
-  late BoardController boardController;
+  // late GameController gameController;
 
   @override
   void initState() {
     super.initState();
-    boardController = BoardController(n: n);
+    // gameController = GameController(n: n);
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 0, 173, 226),
         body: Column(
           children: [
-            Expanded(
-              child: Text('${boardController.winner}')
-            ),
+            const Expanded(child: Center(child: HUD())),
             Expanded(
                 flex: 3,
-                child: Board(
-                  n: n,
-                  boardController: boardController,
-                )),
-            Expanded(
+                child: Board()),
+            const Expanded(
               child: SizedBox(),
             ),
           ],
         ));
-  }
-
-  void _showWinDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Winner ${boardController.winner}'),
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      boardController.resetBoard();
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Play Again'))
-            ],
-          );
-        });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app/controllers/game_controller.dart';
 import 'app/views/home_view.dart';
 
 void main(List<String> args) {
@@ -12,7 +13,7 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeView(),
+      home: GameController(n: 5, child: HomeView()),
     );
   }
 }

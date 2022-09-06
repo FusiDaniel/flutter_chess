@@ -1,46 +1,38 @@
 import 'package:flutter/material.dart';
-import '../controllers/board_controller.dart';
+import '../controllers/game_controller.dart';
 
 class Board extends StatefulWidget {
-  final int n;
-  final BoardController boardController;
-  const Board({super.key, required this.n, required this.boardController});
+
+  const Board({super.key});
 
   @override
   State<Board> createState() => _BoardState();
 }
 
 class _BoardState extends State<Board> {
-  late int n;
-  late BoardController boardController;
-
-  @override
-  void initState() {
-    super.initState();
-    n = widget.n;
-    boardController = widget.boardController;
-  }
 
   @override
   Widget build(BuildContext context) {
+    var controller =
+        context.dependOnInheritedWidgetOfExactType<GameController>()!;
     return GridView.builder(
-        itemCount: n * n,
+        itemCount: controller.n * controller.n,
         gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: n),
+            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: controller.n),
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
               setState(() {
-                boardController.markCell(index);
+                controller.markCell(index);
               });
             },
             child: Container(
-              color: tileColor(index, n),
+              color: tileColor(index, controller.n),
               child: Center(
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constrains) {
                     return Text(
-                      boardController.get(index),
+                      controller.get(index),
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: constrains.maxHeight * 0.5),
